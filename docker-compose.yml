@@ -1,20 +1,25 @@
 version: '2'
 services:
     nginx:
-        image: nginx:1.14
-        container_name: coaster_cloud_report_nginx
+        build:
+            context: ./
+            dockerfile: ./docker/nginx/Dockerfile
+            target: base
+        container_name: coaster_cloud_media_nginx
         ports:
             - 8030:80
         volumes:
             - ./docker/nginx/server.conf:/etc/nginx/conf.d/app.conf:delegated
         networks:
             - local
+        depends_on:
+          - php
     php:
         build:
             context: ./
             dockerfile: ./docker/php/Dockerfile
-            target: php-base
-        container_name: coaster_cloud_report_php
+            target: base
+        container_name: coaster_cloud_media_php
         env_file:
             - .env
         volumes:

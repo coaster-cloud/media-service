@@ -21,12 +21,22 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
 
-      - name: Build and push
+      - name: Build and push nginx
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./docker/nginx/Dockerfile
+          target: production
+          push: true
+          tags: |
+            ghcr.io/coaster-cloud/media-nginx:latest
+
+      - name: Build and push php
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./docker/php/Dockerfile
-          target: php-production
+          target: production
           push: true
           tags: |
-            ghcr.io/coaster-cloud/report-service:latest
+            ghcr.io/coaster-cloud/media-php:latest
