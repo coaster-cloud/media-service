@@ -17,7 +17,14 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 
 WORKDIR /var/www/html
 
+FROM base as development
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+COPY ./docker/php/development.ini $PHP_INI_DIR/conf.d/
+
 FROM base as production
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY ./docker/php/production.ini $PHP_INI_DIR/conf.d/
+
 COPY ./ ./
 
 RUN composer install --no-dev --no-interaction

@@ -4,7 +4,7 @@ services:
         build:
             context: ./
             dockerfile: ./docker/nginx/Dockerfile
-            target: base
+            target: development
         container_name: coaster_cloud_media_nginx
         ports:
             - 8030:80
@@ -18,7 +18,7 @@ services:
         build:
             context: ./
             dockerfile: ./docker/php/Dockerfile
-            target: base
+            target: development
         container_name: coaster_cloud_media_php
         env_file:
             - .env
