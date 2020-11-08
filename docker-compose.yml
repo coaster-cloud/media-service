@@ -4,19 +4,21 @@ services:
         image: nginx:1.14
         container_name: coaster_cloud_report_nginx
         ports:
-            - 80:80
-        volumes_from:
-            - php
+            - 8030:80
+        volumes:
+            - ./docker/nginx/server.conf:/etc/nginx/conf.d/app.conf:delegated
         networks:
             - local
     php:
-        image: migoapps/docker-php:3.0.1
+        build:
+            context: ./
+            dockerfile: ./docker/php/Dockerfile
+            target: php-base
         container_name: coaster_cloud_report_php
         env_file:
             - .env
         volumes:
             - ./:/var/www/html:delegated
-            - ./docker/nginx/server.conf:/etc/nginx/conf.d/app.conf:delegated
         networks:
             - local
 networks:
