@@ -36,17 +36,8 @@ class CreateBannerAction
 
     public function __invoke(string $username, Request $request): BinaryFileResponse
     {
-        $locale = $request->query->get('locale', 'en');
-        $dataKey = $request->query->get('data', 'default');
+        $category = $request->query->get('category', null);
         $backgroundKey = $request->query->get('bg', 'logo_v1');
-
-        if (!in_array($locale, ['en', 'de'])) {
-            throw new InvalidArgumentException(sprintf('Unknown locale key `%s` provided.', $locale));
-        }
-
-        if (!in_array($dataKey, ['default'])) {
-            throw new InvalidArgumentException(sprintf('Unknown data key `%s` provided.', $dataKey));
-        }
 
         if (!array_key_exists($backgroundKey, $this->banners)) {
             throw new InvalidArgumentException(sprintf('Unknown background key `%s` provided.', $backgroundKey));
@@ -82,7 +73,7 @@ class CreateBannerAction
         $banner->extendBanner($image);
 
         $index = 0;
-        foreach ($this->repository->getData($dataKey) as $text) {
+        foreach ($this->repository->getData($category, $username) as $text) {
             imagettftext(
                 $image,
                 $banner->getTextSize(),

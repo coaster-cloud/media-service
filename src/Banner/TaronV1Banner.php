@@ -44,7 +44,7 @@ class TaronV1Banner extends AbstractBanner
         return [
             ['x' => 10, 'y' => 20],
             ['x' => 10, 'y' => 45],
-            ['x' => 10, 'y' => 70],
+            ['x' => 10, 'y' => 70]
         ];
     }
 }
