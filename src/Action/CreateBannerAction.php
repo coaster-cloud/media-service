@@ -11,81 +11,91 @@
 
 namespace App\Action;
 
+use App\Banner\BannerInterface;
+use App\Repository\BannerRepository;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CreateBannerAction
 {
-    /** @var HttpClientInterface */
-    private $client;
+    private BannerRepository $repository;
 
-    public function __construct(HttpClientInterface $client)
+    /** @var array<BannerInterface>  */
+    private array $banners;
+
+    private string $assets;
+
+    public function __construct(BannerRepository $repository, iterable $banners, string $assets)
     {
-        $this->client = $client;
+        $this->repository = $repository;
+        $this->banners = iterator_to_array($banners);
+        $this->assets = $assets;
     }
 
     public function __invoke(string $username, Request $request): BinaryFileResponse
     {
         $locale = $request->query->get('locale', 'en');
-        $background = $this->getBackgroundSetting($request->query->get('bg', 'logo_v1'));
+        $dataKey = $request->query->get('data', 'default');
+        $backgroundKey = $request->query->get('bg', 'logo_v1');
 
-        switch ($background['type']) {
-            case IMAGETYPE_JPEG:
-                $image = imagecreatefromjpeg(__DIR__ . '/../../assets/banner/' . $background['filename']);
+        if (!in_array($locale, ['en', 'de'])) {
+            throw new InvalidArgumentException(sprintf('Unknown locale key `%s` provided.', $locale));
+        }
+
+        if (!in_array($dataKey, ['default'])) {
+            throw new InvalidArgumentException(sprintf('Unknown data key `%s` provided.', $dataKey));
+        }
+
+        if (!array_key_exists($backgroundKey, $this->banners)) {
+            throw new InvalidArgumentException(sprintf('Unknown background key `%s` provided.', $backgroundKey));
+        }
+
+        /** @var BannerInterface $banner */
+        $banner = $this->banners[$backgroundKey];
+
+        $backgroundImage = new File($this->assets . $banner->getFilename());
+
+        switch($backgroundImage->getMimeType()) {
+            case 'image/png':
+                $image = imagecreatefrompng($backgroundImage->getRealPath());
                 break;
 
-            case IMAGETYPE_PNG:
-                $image = imagecreatefrompng(__DIR__ . '/../../assets/banner/' . $background['filename']);
+            case 'image/jpeg':
+                $image = imagecreatefromjpeg($backgroundImage->getRealPath());
                 break;
 
             default:
-                throw new InvalidArgumentException(sprintf('Unknown image type `%s`', $background['type']));
+                throw new InvalidArgumentException(sprintf('Unknown image type `%s`', $backgroundImage->getMimeType()));
         }
 
-        if ($background['flip'] === true) {
-            imageflip($image, IMG_FLIP_HORIZONTAL);
-        }
-
-        $font = __DIR__ . '/../../assets/fonts/nunito/Bold.ttf';
+        $textFont = $this->assets . $banner->getTextFont();
         $textColor = imagecolorallocate(
             $image,
-            $background['color']['red'],
-            $background['color']['green'],
-            $background['color']['blue']
+            $banner->getTextColor()['red'],
+            $banner->getTextColor()['green'],
+            $banner->getTextColor()['blue']
         );
+        $textPositions = $banner->getTextPositions();
 
-        // Transparent background
-        if ($background['background']) {
-            $black = imagecolorallocatealpha($image, 0, 0, 0, 50);
-            imagefilledrectangle($image, 0, 0, 555, 80, $black);
-        }
-
-        // TODO: Dynamically
-        $data = [
-            'Total length: 2.000 meter',
-            'Total parks: 122',
-            'Total attractions: 6372'
-        ];
+        $banner->extendBanner($image);
 
         $index = 0;
-        foreach ($data as $text) {
+        foreach ($this->repository->getData($dataKey) as $text) {
             imagettftext(
                 $image,
-                10,
+                $banner->getTextSize(),
                 0,
-                $background['positions'][$index]['x'],
-                $background['positions'][$index]['y'],
+                $textPositions[$index]['x'],
+                $textPositions[$index]['y'],
                 $textColor,
-                $font,
+                $textFont,
                 $text
             );
 
             $index++;
         }
-
-        imagettftext($image, 7, 0, 325, 75, $textColor, $font, 'powered by coaster.cloud');
 
         $tempFilePath = tempnam(sys_get_temp_dir(), 'img') . '.png';
 
@@ -96,24 +106,5 @@ class CreateBannerAction
         return (new BinaryFileResponse($tempFilePath))
             ->deleteFileAfterSend(true)
             ->setCache(['max_age' => 3600, 'public' => true]);
-    }
-
-    private function getBackgroundSetting(string $background): array
-    {
-        switch ($background) {
-            default:
-                return [
-                    'filename' => 'logo_v1.png',
-                    'type' => IMAGETYPE_PNG,
-                    'positions' => [
-                        0 => ['x' => 65, 'y' => 15],
-                        1 => ['x' => 65, 'y' => 35],
-                        2 => ['x' => 65, 'y' => 55],
-                    ],
-                    'color' => ['red' => 100, 'green' => 100, 'blue' => 100],
-                    'background' => false,
-                    'flip' => false
-                ];
-        }
     }
 }
