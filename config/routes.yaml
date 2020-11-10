@@ -1,3 +1,3 @@
 create_banner:
-  path: "/banner/{username}.png"
+  path: "/banner/{username}/{variant}.png"
   controller: App\Action\CreateBannerAction

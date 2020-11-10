@@ -33,19 +33,16 @@ class CreateBannerAction
         $this->assets = $assets;
     }
 
-    public function __invoke(string $username, Request $request): BinaryFileResponse
+    public function __invoke(string $username, string $variant, Request $request): BinaryFileResponse
     {
-        $category = $request->query->get('category', null);
-        $backgroundKey = $request->query->get('bg', 'taron_v1');
-
-        if (!array_key_exists($backgroundKey, $this->banners)) {
-            throw new InvalidArgumentException(sprintf('Unknown background key `%s` provided.', $backgroundKey));
+        if (!array_key_exists($variant, $this->banners)) {
+            throw new InvalidArgumentException(sprintf('Unknown variant key `%s` provided.', $variant));
         }
 
         /** @var BannerInterface $banner */
-        $banner = $this->banners[$backgroundKey];
+        $banner = $this->banners[$variant];
 
-        $image = $banner->create($this->repository->getData($category, $username), $this->assets);
+        $image = $banner->create($this->repository->getData($username), $this->assets);
         $tempFilePath = tempnam(sys_get_temp_dir(), 'img') . '.png';
 
         imagealphablending( $image, false );

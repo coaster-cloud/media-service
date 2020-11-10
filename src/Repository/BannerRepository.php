@@ -24,7 +24,7 @@ class BannerRepository
         $this->client = $client;
     }
 
-    public function getData(?string $category, string $username): array
+    public function getData(string $username): array
     {
         $response = $this->client->request('POST', 'https://coaster.cloud/oci/v1', [
             'headers' => [
@@ -34,7 +34,7 @@ class BannerRepository
                 'query' => <<<'EOL'
                     query ($username: String!, $filter: CountStatisticFilter) {
                       profile(username: $username) {
-                        statistic(filter: $filter) {
+                        coasterStats: statistic(filter: $filter) {
                           summary {
                             key, text
                           }
@@ -45,7 +45,7 @@ class BannerRepository
                 'variables' => [
                     'username' => $username,
                     'filter' => [
-                        'category' => $category
+                        'category' => 'coaster'
                     ]
                 ]
             ]
@@ -57,9 +57,11 @@ class BannerRepository
             throw new InvalidArgumentException(sprintf('Unknown username `%s`', $username));
         }
 
-        $summary = [];
-        foreach ($rawData['data']['profile']['statistic']['summary'] as $item) {
-            $summary[$item['key']] = $item['text'];
+        $summary = [
+            'coaster' => []
+        ];
+        foreach ($rawData['data']['profile']['coasterStats']['summary'] as $item) {
+            $summary['coaster'][$item['key']] = $item['text'];
         }
 
         return $summary;

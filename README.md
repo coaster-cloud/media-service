@@ -5,7 +5,7 @@ for sharing. For example small banners for forum signatures or PDF files with a 
 **This project is not meant for re-use.** It is open source to make it easy to contribute. We provide no support if you
 want to run your own, and will do breaking changes without notice.
 
-See [https://media.coaster.cloud/banner/migo315.png](https://media.coaster.cloud/banner/migo315.png) as example.
+See [https://media.coaster.cloud/banner/migo315/taron_v1.png](https://media.coaster.cloud/banner/migo315/taron_v1.png) as example.
 
 ## Installation
 You only need [docker-compose](https://docs.docker.com/compose/) to install this application. The app container
@@ -20,23 +20,25 @@ After that your local application will be accessible via `http://localhost:8030`
 Run `docker-compose stop` to stop and `docker-compose start` to start the application. 
 
 ## Add new banner
-You can add new banners with some php code. Just create a new class and implement the `App\Banner\BannerInterface` the interface. 
+We would like to see some new banners. You only need some PHP code. 
+Just create a new class and implement the `App\Banner\BannerInterface` the interface. 
 Take a look at `src/Banner/TaronV1Banner.php` which creates the default banner as example.
 
 The `create` method provide you with count statistics for the given username and the asset path if you need to load a
 custom image or font your for banner creation.
 
-```php
-public function create(array $stats, string $assetPath) {}
-```
-
 Create an issue if you have any questions.
 
-## Current implemented banners
-Replace the placeholder {username} with your username at [coaster.cloud](https://coaster.cloud).
+## Current banners
+There are different banner variants implemented. Just replace `{username}` with your username at 
+[coaster.cloud](https://coaster.cloud) and `{variant}` with your desired variant.
 
-| Url | Description | Example |
-|-----|-------------|---------|
-| http://localhost:8030/banner/{username}.png | Create a short banner with count statistics | ![alt text](https://media.coaster.cloud/banner/migo315.png "migo315 Counts") |
+Local: `http://localhost:8030/banner/{username}/{variant}.png`
 
-For production use `https://media.coaster.cloud` instead of localhost. Example: https://media.coaster.cloud/banner/migo315.png
+Production: `https://media.coaster.cloud/banner/{username}/{variant}.png`
+
+Example: `https://media.coaster.cloud/banner/migo315/taron_v1.png`
+
+| Variant    | Example |
+|------------|---------|
+| `taron_v1` | ![alt text](https://media.coaster.cloud/banner/migo315/taron_v1.png "migo315 Counts") |

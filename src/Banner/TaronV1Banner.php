@@ -22,12 +22,14 @@ class TaronV1Banner implements BannerInterface
     {
         $image = imagecreatefromjpeg($assetPath . 'banner/taron_v1.jpg');
 
-        $textSize = 20;
-        $textFont = $assetPath . 'fonts/nunito/Bold.ttf';
-        $textColor = imagecolorallocate($image, 100, 100, 100);
+        $textFontBold = $assetPath . 'fonts/nunito/Bold.ttf';
+        $textFontLight = $assetPath . 'fonts/nunito/Light.ttf';
+        $textColorGrey = imagecolorallocate($image, 100, 100, 100);
 
-        $offset = strlen((string) $stats['total_attractions_unique']) * 8;
-        imagettftext($image, $textSize, 0, 370 - $offset, 60, $textColor, $textFont, $stats['total_attractions_unique']);
+        $count = $stats['coaster']['total_attractions_unique'];
+        $offset = strlen((string) $count) * 8;
+        imagettftext($image, 8, 0, 325, 28, $textColorGrey, $textFontLight, 'COASTER COUNT');
+        imagettftext($image, 20, 0, 370 - $offset, 58, $textColorGrey, $textFontBold, $count);
 
         return $image;
     }
