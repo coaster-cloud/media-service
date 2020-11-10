@@ -15,7 +15,6 @@ use App\Banner\BannerInterface;
 use App\Repository\BannerRepository;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 
 class CreateBannerAction
@@ -37,7 +36,7 @@ class CreateBannerAction
     public function __invoke(string $username, Request $request): BinaryFileResponse
     {
         $category = $request->query->get('category', null);
-        $backgroundKey = $request->query->get('bg', 'logo_v1');
+        $backgroundKey = $request->query->get('bg', 'taron_v1');
 
         if (!array_key_exists($backgroundKey, $this->banners)) {
             throw new InvalidArgumentException(sprintf('Unknown background key `%s` provided.', $backgroundKey));
@@ -46,48 +45,7 @@ class CreateBannerAction
         /** @var BannerInterface $banner */
         $banner = $this->banners[$backgroundKey];
 
-        $backgroundImage = new File($this->assets . $banner->getFilename());
-
-        switch($backgroundImage->getMimeType()) {
-            case 'image/png':
-                $image = imagecreatefrompng($backgroundImage->getRealPath());
-                break;
-
-            case 'image/jpeg':
-                $image = imagecreatefromjpeg($backgroundImage->getRealPath());
-                break;
-
-            default:
-                throw new InvalidArgumentException(sprintf('Unknown image type `%s`', $backgroundImage->getMimeType()));
-        }
-
-        $textFont = $this->assets . $banner->getTextFont();
-        $textColor = imagecolorallocate(
-            $image,
-            $banner->getTextColor()['red'],
-            $banner->getTextColor()['green'],
-            $banner->getTextColor()['blue']
-        );
-        $textPositions = $banner->getTextPositions();
-
-        $banner->extendBanner($image);
-
-        $index = 0;
-        foreach ($this->repository->getData($category, $username) as $text) {
-            imagettftext(
-                $image,
-                $banner->getTextSize(),
-                0,
-                $textPositions[$index]['x'],
-                $textPositions[$index]['y'],
-                $textColor,
-                $textFont,
-                $text
-            );
-
-            $index++;
-        }
-
+        $image = $banner->create($this->repository->getData($category, $username), $this->assets);
         $tempFilePath = tempnam(sys_get_temp_dir(), 'img') . '.png';
 
         imagealphablending( $image, false );

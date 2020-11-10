@@ -21,44 +21,12 @@ interface BannerInterface
     public static function getKey(): string;
 
     /**
-     * Get filename
+     * Create banner image
      *
-     * @return string
-     */
-    public function getFilename(): string;
-
-    /**
-     * Get text positions for 3 text
+     * @param array $stats
+     * @param string $assetPath
      *
-     * @return array
+     * @return resource
      */
-    public function getTextPositions(): array;
-
-    /**
-     * Get text color
-     *
-     * @return array
-     */
-    public function getTextColor(): array;
-
-    /**
-     * Get text font
-     *
-     * @return string
-     */
-    public function getTextFont(): string;
-
-    /**
-     * Get text size
-     *
-     * @return int
-     */
-    public function getTextSize(): int;
-
-    /**
-     * Add additional operations for banner
-     *
-     * @param resource $image
-     */
-    public function extendBanner($image): void;
+    public function create(array $stats, string $assetPath);
 }

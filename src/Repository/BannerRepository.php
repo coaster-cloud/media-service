@@ -62,10 +62,6 @@ class BannerRepository
             $summary[$item['key']] = $item['text'];
         }
 
-        return [
-            sprintf('Count: %s', $summary['total_attractions_unique']),
-            sprintf('Rides: %s', $summary['total_attractions']),
-            sprintf('Driven: %s', $summary['total_ride_length'])
-        ];
+        return $summary;
     }
 }

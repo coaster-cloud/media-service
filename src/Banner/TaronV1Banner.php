@@ -11,40 +11,24 @@
 
 namespace App\Banner;
 
-class TaronV1Banner extends AbstractBanner
+class TaronV1Banner implements BannerInterface
 {
     public static function getKey(): string
     {
         return 'taron_v1';
     }
 
-    public function getFilename(): string
+    public function create(array $stats, string $assetPath)
     {
-        return 'banner/taron_v1.jpg';
-    }
+        $image = imagecreatefromjpeg($assetPath . 'banner/taron_v1.jpg');
 
-    public function extendBanner($image): void
-    {
-        $black = imagecolorallocatealpha($image, 0, 0, 0, 50);
-        imagefilledrectangle($image, 0, 0, 555, 80, $black);
-    }
+        $textSize = 20;
+        $textFont = $assetPath . 'fonts/nunito/Bold.ttf';
+        $textColor = imagecolorallocate($image, 100, 100, 100);
 
-    public function getTextColor(): array
-    {
-        return ['red' => 255, 'green' => 255, 'blue' => 255];
-    }
+        $offset = strlen((string) $stats['total_attractions_unique']) * 8;
+        imagettftext($image, $textSize, 0, 370 - $offset, 60, $textColor, $textFont, $stats['total_attractions_unique']);
 
-    public function getTextSize(): int
-    {
-        return 12;
-    }
-
-    public function getTextPositions(): array
-    {
-        return [
-            ['x' => 10, 'y' => 20],
-            ['x' => 10, 'y' => 45],
-            ['x' => 10, 'y' => 70]
-        ];
+        return $image;
     }
 }
