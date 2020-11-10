@@ -5,7 +5,7 @@ services:
             context: ./
             dockerfile: ./docker/nginx/Dockerfile
             target: development
-        container_name: coaster_cloud_media_nginx
+        container_name: coaster_cloud_media_service_nginx
         ports:
             - 8030:80
         volumes:
@@ -19,7 +19,7 @@ services:
             context: ./
             dockerfile: ./docker/php/Dockerfile
             target: development
-        container_name: coaster_cloud_media_php
+        container_name: coaster_cloud_media_service_php
         env_file:
             - .env
         volumes:

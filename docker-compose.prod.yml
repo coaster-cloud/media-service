@@ -1,8 +1,8 @@
 version: '2'
 services:
     nginx:
-        image: ghcr.io/coaster-cloud/media-nginx:latest
-        container_name: coaster_cloud_media_nginx
+        image: ghcr.io/coaster-cloud/media-service-nginx:latest
+        container_name: coaster_cloud_media_service_nginx
         restart: always
         ports:
             - 8030:80
@@ -11,8 +11,8 @@ services:
         depends_on:
           - php
     php:
-        image: ghcr.io/coaster-cloud/media-php:latest
-        container_name: coaster_cloud_media_php
+        image: ghcr.io/coaster-cloud/media-service-php:latest
+        container_name: coaster_cloud_media_service_php
         restart: always
         env_file:
             - .env

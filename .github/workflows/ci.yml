@@ -29,7 +29,7 @@ jobs:
           target: production
           push: true
           tags: |
-            ghcr.io/coaster-cloud/media-nginx:latest
+            ghcr.io/coaster-cloud/media-service-nginx:latest
 
       - name: Build and push php
         uses: docker/build-push-action@v2
@@ -39,4 +39,4 @@ jobs:
           target: production
           push: true
           tags: |
-            ghcr.io/coaster-cloud/media-php:latest
+            ghcr.io/coaster-cloud/media-service-php:latest
