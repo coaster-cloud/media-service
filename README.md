@@ -9,13 +9,13 @@ See [https://media.coaster.cloud/banner/migo315/taron_v1.png](https://media.coas
 
 ## Installation
 You only need [docker-compose](https://docs.docker.com/compose/) to install this application. The app container
-contains all dependencies for building and serving the application.
+contains all dependencies for building and serving the application. The installation can take a few minutes.
 
 1. Clone this repository
 2. Create and start container with `docker-compose up -d --build`
 3. Install dependencies `docker-compose exec php composer install`
 
-After that your local application will be accessible via `http://localhost:8030`.
+After that your local application will be accessible via `http://localhost`.
 
 Run `docker-compose stop` to stop and `docker-compose start` to start the application. 
 
@@ -33,7 +33,7 @@ Create an issue if you have any questions.
 There are different banner variants implemented. Just replace `{username}` with your username at 
 [coaster.cloud](https://coaster.cloud) and `{variant}` with your desired variant.
 
-Local: `http://localhost:8030/banner/{username}/{variant}.png`
+Local: `http://localhost/banner/{username}/{variant}.png`
 
 Production: `https://media.coaster.cloud/banner/{username}/{variant}.png`
 

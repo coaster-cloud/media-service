@@ -1,11 +1,11 @@
-version: '2'
+version: '3.8'
 services:
     nginx:
         image: ghcr.io/coaster-cloud/media-service-nginx:latest
         container_name: coaster_cloud_media_service_nginx
         restart: always
         ports:
-            - 8030:80
+            - 8030:8030
         networks:
             - local
         depends_on:

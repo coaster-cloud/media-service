@@ -26,7 +26,6 @@ jobs:
         with:
           context: .
           file: ./docker/nginx/Dockerfile
-          target: production
           push: true
           tags: |
             ghcr.io/coaster-cloud/media-service-nginx:latest
@@ -36,7 +35,8 @@ jobs:
         with:
           context: .
           file: ./docker/php/Dockerfile
-          target: production
           push: true
+          build-args: |
+            bootstrap=production
           tags: |
             ghcr.io/coaster-cloud/media-service-php:latest

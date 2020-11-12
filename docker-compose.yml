@@ -1,15 +1,14 @@
-version: '2'
+version: '3.8'
 services:
     nginx:
         build:
             context: ./
             dockerfile: ./docker/nginx/Dockerfile
-            target: development
         container_name: coaster_cloud_media_service_nginx
         ports:
-            - 8030:80
+            - 80:8030
         volumes:
-            - ./docker/nginx/server.conf:/etc/nginx/conf.d/app.conf:delegated
+            - ./docker/nginx/server.conf:/etc/nginx/conf.d/server.conf:delegated
         networks:
             - local
         depends_on:
@@ -18,7 +17,6 @@ services:
         build:
             context: ./
             dockerfile: ./docker/php/Dockerfile
-            target: development
         container_name: coaster_cloud_media_service_php
         env_file:
             - .env
