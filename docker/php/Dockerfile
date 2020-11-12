@@ -1,4 +1,5 @@
 FROM php:7.4-fpm
+ARG bootstrap=development
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
