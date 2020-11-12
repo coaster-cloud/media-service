@@ -17,5 +17,3 @@ WORKDIR /var/www/html
 COPY ./ ./
 
 RUN ./docker/php/bootstrap.sh "$bootstrap" "$PHP_INI_DIR"
-
-EXPOSE 8030
