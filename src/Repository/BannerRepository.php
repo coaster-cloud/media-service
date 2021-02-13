@@ -11,7 +11,7 @@
 
 namespace App\Repository;
 
-use InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BannerRepository
@@ -49,7 +49,7 @@ class BannerRepository
         $rawData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         if ($rawData['data']['account'] === null) {
-            throw new InvalidArgumentException(sprintf('Unknown username `%s`', $username));
+            throw new NotFoundHttpException(sprintf('Unknown username `%s`', $username));
         }
 
         $summary = [

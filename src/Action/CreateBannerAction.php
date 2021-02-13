@@ -13,9 +13,9 @@ namespace App\Action;
 
 use App\Banner\BannerInterface;
 use App\Repository\BannerRepository;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CreateBannerAction
 {
@@ -36,7 +36,7 @@ class CreateBannerAction
     public function __invoke(string $username, string $variant, Request $request): BinaryFileResponse
     {
         if (!array_key_exists($variant, $this->banners)) {
-            throw new InvalidArgumentException(sprintf('Unknown variant key `%s` provided.', $variant));
+            throw new NotFoundHttpException(sprintf('Unknown variant key `%s` provided.', $variant));
         }
 
         /** @var BannerInterface $banner */

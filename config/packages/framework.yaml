@@ -9,3 +9,5 @@ framework:
 
     php_errors:
         log: true
+
+    error_controller: App\Action\ShowErrorAction
