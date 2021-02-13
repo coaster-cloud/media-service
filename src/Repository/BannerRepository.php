@@ -26,42 +26,37 @@ class BannerRepository
 
     public function getData(string $username): array
     {
-        $response = $this->client->request('POST', 'https://coaster.cloud/oci/v1', [
+        $response = $this->client->request('POST', 'https://data.coaster.cloud/v1', [
             'headers' => [
                 'Accept' => 'application/json',
             ],
-            'body' => [
+            'json' => [
                 'query' => <<<'EOL'
-                    query ($username: String!, $filter: CountStatisticFilter) {
-                      profile(username: $username) {
-                        coasterStats: statistic(filter: $filter) {
-                          summary {
-                            key, text
-                          }
+                    query ($username: String!) {
+                      account(id: $username) {
+                        rideStatistic {
+                          rideFacts { key, value }
                         }
                       }
                     }
                 EOL,
                 'variables' => [
-                    'username' => $username,
-                    'filter' => [
-                        'category' => 'coaster'
-                    ]
+                    'username' => $username
                 ]
             ]
         ]);
 
         $rawData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        if ($rawData['data']['profile'] === null) {
+        if ($rawData['data']['account'] === null) {
             throw new InvalidArgumentException(sprintf('Unknown username `%s`', $username));
         }
 
         $summary = [
-            'coaster' => []
+            'rideFacts' => []
         ];
-        foreach ($rawData['data']['profile']['coasterStats']['summary'] as $item) {
-            $summary['coaster'][$item['key']] = $item['text'];
+        foreach ($rawData['data']['account']['rideStatistic']['rideFacts'] as $item) {
+            $summary['rideFacts'][$item['key']] = $item['value'];
         }
 
         return $summary;
