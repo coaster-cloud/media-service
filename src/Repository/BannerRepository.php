@@ -35,7 +35,8 @@ class BannerRepository
                     query ($username: String!) {
                       account(id: $username) {
                         rideStatistic {
-                          rideFacts { key, value }
+                          counts { key, value },
+                          rideFacts { key, value },
                         }
                       }
                     }
@@ -53,10 +54,16 @@ class BannerRepository
         }
 
         $summary = [
+            'counts' => [],
             'rideFacts' => []
         ];
+
         foreach ($rawData['data']['account']['rideStatistic']['rideFacts'] as $item) {
             $summary['rideFacts'][$item['key']] = $item['value'];
+        }
+
+        foreach ($rawData['data']['account']['rideStatistic']['counts'] as $item) {
+            $summary['counts'][$item['key']] = $item['value'];
         }
 
         return $summary;

@@ -26,7 +26,7 @@ class TaronV1Banner implements BannerInterface
         $textFontLight = $assetPath . 'fonts/nunito/Light.ttf';
         $textColorGrey = imagecolorallocate($image, 100, 100, 100);
 
-        $count = $stats['rideFacts']['totalCoasterAttractions'];
+        $count = $stats['counts']['totalCoasterAttractions'];
         $offset = strlen((string) $count) * 8;
         imagettftext($image, 8, 0, 325, 28, $textColorGrey, $textFontLight, 'COASTER COUNT');
         imagettftext($image, 20, 0, 370 - $offset, 58, $textColorGrey, $textFontBold, $count);
