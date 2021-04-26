@@ -31,16 +31,7 @@ class BannerRepository
                 'Accept' => 'application/json',
             ],
             'json' => [
-                'query' => <<<'EOL'
-                    query ($username: String!) {
-                      account(id: $username) {
-                        rideStatistic {
-                          counts { key, value },
-                          rideFacts { key, value },
-                        }
-                      }
-                    }
-                EOL,
+                'query' => '42b58a5f-0f54-4aab-a68d-471b29284ba5',
                 'variables' => [
                     'username' => $username
                 ]
